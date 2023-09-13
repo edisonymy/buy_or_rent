@@ -186,9 +186,9 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV std (as % of invested capital): {np.std(buying_npv_list)/model.DEPOSIT*100:.2f}%')
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
         if model.buying_fv > model.renting_fv:
-            text="Typical Return is higher if you buy."
+            text="Under the given assumptions, typical return is higher if you buy."
         else:
-            text="Typical Return is higher if you rent and invest the deposit."
+            text="Under the given assumptions, typical return is higher if you rent and invest the deposit."
         
         st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
