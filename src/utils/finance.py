@@ -14,11 +14,11 @@ def annuity_pv(payment, discount_rate, n_periods, growth_rate):
         pv += payment*(1+growth_rate)**(i-1) /(1+discount_rate)**(i)
     return pv
 
-def annuity_fv(payment, discount_rate, n_periods, growth_rate):
-    pv = 0
+def annuity_fv(payment, discount_rate, n_periods, growth_rate, adjust_for_inflation = 0):
+    fv = 0
     for i in range(1, n_periods+1):
-        pv += payment*(1+growth_rate)**(i-1) *(1+discount_rate)**(n_periods-i)
-    return pv
+        fv += payment*(1+growth_rate)**(i-1) *(1+discount_rate)**(n_periods-i)
+    return fv / float(1+adjust_for_inflation)**(n_periods)
 
 def annuity_payment(pv, discount_rate, n_periods, growth_rate):
     return pv* (discount_rate - growth_rate) / (1- (1+growth_rate)**n_periods * (1+discount_rate)**(-1*n_periods))
@@ -27,5 +27,5 @@ def annuity_payment(pv, discount_rate, n_periods, growth_rate):
 def pv_future_payment(payment, discount_rate, n_periods):
     return payment/(1+discount_rate)**(n_periods)
 
-def fv_present_payment(payment, discount_rate, n_periods):
-    return payment*(1+discount_rate)**(n_periods)
+def fv_present_payment(payment, discount_rate, n_periods, adjust_for_inflation = 0):
+    return payment*(1+discount_rate)**(n_periods) / float(1+adjust_for_inflation)**(n_periods)

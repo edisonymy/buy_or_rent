@@ -64,6 +64,8 @@ def bin_continuous_features(df, bin_config):
     return df
 
 def get_param_distribution(mean, std, samples, bins,plot=True, as_int = False, title =''):
+    if std <=0:
+        return [mean]
     s = np.random.normal(mean, std, samples)
     if plot:
         fig, ax = plt.subplots(figsize=(4, 3))

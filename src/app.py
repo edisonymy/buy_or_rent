@@ -7,7 +7,8 @@ from utils.general import get_param_distribution
 
 # Streamlit app title
 st.title('Buy or Rent Simulation Model')
-st.write("Adjust simulation assumptions on the left sidebar.")
+st.write("We use simulations to show possible returns for buying a property or renting given your assumptions.")
+st.write("Adjust your assumptions on the left sidebar.")
 st.write("---")
 # left_column, right_column = st.columns(2)
 
@@ -28,37 +29,37 @@ st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allo
 st.sidebar.write("---")
 st.sidebar.subheader('Uncertain Model Parameters:')
 mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.06, step = 0.001, format="%.3f")
-mortgage_interest_annual_std = st.sidebar.slider('Mortgage Interest Std:', min_value=0.001, max_value=0.1, value=0.01, step = 0.001, format="%.3f")
+mortgage_interest_annual_std = st.sidebar.slider('Mortgage Interest Std:', min_value=0.0, max_value=0.1, value=0.01, step = 0.001, format="%.3f")
 text = 'Check out historical mortgage rates here: https://tradingeconomics.com/united-kingdom/mortgage-rate'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 mortgage_interest_annual_list = get_param_distribution(mortgage_interest_annual_mean, mortgage_interest_annual_std, n_samples, n_bins, title ='Assumed Distribution for Average Mortgage Interest Rate')
 st.sidebar.write("---")
 property_price_growth_annual_mean = st.sidebar.slider('Property Price Growth Mean:', min_value=0.01, max_value=0.1, value=0.03, step = 0.001, format="%.3f")
-property_price_growth_annual_std = st.sidebar.slider('Property Price Growth Std:', min_value=0.001, max_value=0.05, value=0.01, step = 0.001, format="%.3f")
+property_price_growth_annual_std = st.sidebar.slider('Property Price Growth Std:', min_value=0.0, max_value=0.05, value=0.01, step = 0.001, format="%.3f")
 text = 'Check out historical property price growth here: https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/housepriceindex/june2023'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 property_price_growth_annual_list = get_param_distribution(property_price_growth_annual_mean, property_price_growth_annual_std, n_samples, n_bins, title ='Assumed Distribution for Annual Property Value Growth')
 st.sidebar.write("---")
 rent_increase_mean = st.sidebar.slider('Rent Increase Mean:', min_value=0.01, max_value=0.1, value=0.01325, step = 0.001, format="%.3f")
-rent_increase_std = st.sidebar.slider('Rent Increase Std:', min_value=0.001, max_value=0.05, value=0.01, step = 0.001, format="%.3f")
+rent_increase_std = st.sidebar.slider('Rent Increase Std:', min_value=0.0, max_value=0.05, value=0.01, step = 0.001, format="%.3f")
 text = 'Checkout historical rent increases here: https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/indexofprivatehousingrentalprices/july2023'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 rent_increase_list = get_param_distribution(rent_increase_mean, rent_increase_std, n_samples, n_bins, title ='Assumed Distribution for Average Annual Rent Increase')
 st.sidebar.write("---")
 investment_return_annual_mean = st.sidebar.slider('Investment Return Mean:', min_value=0.01, max_value=0.1, value=0.06, step = 0.001, format="%.3f")
-investment_return_annual_std = st.sidebar.slider('Investment Return Std:', min_value=0.001, max_value=0.05, value=0.02, step = 0.001, format="%.3f")
+investment_return_annual_std = st.sidebar.slider('Investment Return Std:', min_value=0.0, max_value=0.05, value=0.02, step = 0.001, format="%.3f")
 text = 'Check out historical stock market returns here: https://www.investopedia.com/ask/answers/042415/what-average-annual-return-sp-500.asp'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 investment_return_annual_list = get_param_distribution(investment_return_annual_mean, investment_return_annual_std, n_samples, n_bins, title ='Assumed Distribution for Average Investment Rate of Return')
 st.sidebar.write("---")
-years_until_sell_mean = st.sidebar.slider('Years Until Sell Mean:', min_value=5, max_value=25, value=15)
-years_until_sell_std = st.sidebar.slider('Years Until Sell Std:', min_value=1, max_value=10, value=5)
+years_until_sell_mean = st.sidebar.slider('Years Until Sell Mean:', min_value=0, max_value=25, value=15)
+years_until_sell_std = st.sidebar.slider('Years Until Sell Std:', min_value=0, max_value=10, value=5)
 years_until_sell_list = get_param_distribution(years_until_sell_mean, years_until_sell_std, n_samples, n_bins, as_int=True, title ='Assumed Distribution for Years Until Property Is Sold')
 st.sidebar.write("---")
 # n_samples = st.sidebar.slider('Number of Samples:', min_value=100, max_value=50000, value=10000)
 # n_bins = st.sidebar.slider('Number of Bins:', min_value=10, max_value=100, value=30)
 st.sidebar.subheader('Simulation Settings:')
-n_samples_simulation = st.sidebar.slider('Number of Simulation Samples:', min_value=100, max_value=10000, value=2000)
+n_samples_simulation = st.sidebar.slider('Number of Simulation Samples:', min_value=100, max_value=10000, value=1000)
 
 # # Generate data
 # st.header('Generate Data')
