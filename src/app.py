@@ -17,7 +17,7 @@ n_bins = 30
 # User-enterable parameters for data generation
 st.sidebar.header('Your Assumptions')
 # st.sidebar.subheader('Fixed Model Parameters:')
-house_price = st.sidebar.number_input("Property Price", value=800000, step = 10000)
+house_price = st.sidebar.number_input("Property Price", value=300000, step = 10000)
 # rental_yield = st.sidebar.number_input("Rental Yield (used to calculate monthly rent for equivalent property):", value=0.043, step = 0.001, format="%.3f") #st.sidebar.slider('Rental Yield (used to calculate monthly rent for equivalent property):', min_value=0.01, max_value=1.0, value=0.044, format="%.3f")
 # implied_monthly_rent = house_price * rental_yield / 12
 # st.sidebar.write(f"Monthly Rent: {implied_monthly_rent:.0f}")
