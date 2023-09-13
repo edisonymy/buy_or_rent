@@ -189,10 +189,10 @@ def generate_combinations_and_calculate_npv(
             left_column.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         
 
-        if 100-percentiles_df.loc[5,"Percentile"] >= 50:
-            text="It's Better To Buy Most of the Time."
+        if model.buying_fv > model.renting_fv:
+            text="Typical Return is higher if you buy."
         else:
-            text="It's Better To Rent Most of the Time."
+            text="Typical Return is higher if you rent."
         
         st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         # st.write(percentiles_df)
