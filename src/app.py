@@ -10,7 +10,7 @@ from utils.general import get_param_distribution
 st.title('Open Source UK Buy or Rent Simulation Model')
 st.write("---")
 st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions. All parameters are assumed to be uncorrelated.")
-st.markdown("***Disclaimer: This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app.***")
+st.markdown("***Disclaimer: This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. Source code can be found at: https://github.com/edisonymy/buy_or_rent***")
 st.write("---")
 
 n_samples = 10000
