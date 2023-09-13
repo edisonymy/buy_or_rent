@@ -16,7 +16,7 @@ st.write("---")
 n_samples = 10000
 n_bins = 30
 
-
+np.random.seed(123)
 
 # User-enterable parameters for data generation
 st.subheader('Your Assumptions')
@@ -81,6 +81,7 @@ model = Buy_or_Rent_Model()
 model.HOUSE_PRICE = house_price
 model.DEPOSIT_MULT = deposit_mult
 model.RENTAL_YIELD = rental_yield
+model.MORTGAGE_LENGTH = mortgage_length
 model.ANNUAL_SALARY = annual_income
 
 # Generate combinations and calculate NPV
