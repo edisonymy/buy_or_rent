@@ -112,12 +112,14 @@ def plot_kde_from_list(arrays, st, figsize=(7, 2), main_colors = ['green'], lege
 
         # Plot the shaded area to the left of 0 in a different color
         sns.kdeplot(data=array, ax=ax, color='red', fill=True, bw_adjust = 2, label='Shaded Area', clip=(None, 0))
-        x_low_percentile = np.percentile(array, 0.001)
-        x_high_percentile = np.percentile(array, 99)
+        # x_low_percentile = np.percentile(array, 0.001)
+        # x_high_percentile = np.percentile(array, 99)
+        x_mean = np.mean(array)
+        x_std = np.std(array)
     
     # Set the axis limits based on the 95th percentile
     ax.xaxis.set_major_formatter(mticker.FuncFormatter(format_with_commas))
-    ax.set_xlim(x_low_percentile, x_high_percentile)
+    ax.set_xlim(x_mean-3*x_std, x_mean+3*x_std)
     ax.set_xlabel(xlabel)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
     ax.set_title(title)
