@@ -167,9 +167,9 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV std (as % of invested capital): {np.std(buying_npv_list)/model.DEPOSIT*100:.2f}%')
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
         left_column, right_column = st.columns(2)
-        right_column.write(f"### Buy - Typical Scenario after {model.years_until_sell} years")
+        right_column.write(f"### Buy - Asset value after {model.years_until_sell} years")
         plot_kde_from_list(buying_fv_list, right_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
-        right_column.markdown(f"**Total Asset Value: £{model.buying_fv:,.0f}**")
+        right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**")
         right_column.markdown(f"***Breakdown:***")
         right_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
         right_column.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]")
@@ -178,9 +178,9 @@ def generate_combinations_and_calculate_npv(
         right_column.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]")
         
 
-        left_column.write(f"### Rent - Typical Scenario after {model.years_until_sell} years")
+        left_column.write(f"### Rent - Asset value after {model.years_until_sell} years")
         plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
-        left_column.markdown(f"**Total Asset Value: £{model.renting_fv:,.0f}**")
+        left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**")
         left_column.markdown(f"***Breakdown:***")
         left_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
         if model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY) >= 0:
@@ -198,7 +198,7 @@ def generate_combinations_and_calculate_npv(
         # st.write(percentiles_df)
         
         plot_kde_from_list(buying_npv_list, st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
-
+        st.markdown("<span style='font-size: 14px;'>Net Present Value represents the net gain/loss that result in purchasing the property in present value. If it is positive, then it is financially better to buy a property. Present value is calculated using a future discount rate equal to your assumed investment return. This is equivalent to assuming that any amount you save on rent or mortgage will be invested. </span>", unsafe_allow_html=True)
         st.write("### Net Present Value Statistics")
         st.write(f'- Buying is better {100-percentiles_df.loc[5,"Percentile"]:.0f}% of the time')
         st.write(f"- Mean: £{np.mean(buying_npv_list):,.0f}")

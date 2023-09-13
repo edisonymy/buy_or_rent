@@ -60,7 +60,7 @@ text = 'Check out historical stock market returns here: https://www.investopedia
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 investment_return_annual_list = get_param_distribution(investment_return_annual_mean, investment_return_annual_std, n_samples, n_bins, title ='Assumed Distribution for Average Investment Rate of Return')
 st.sidebar.write("---")
-years_until_sell_mean = st.sidebar.slider('Years Until Sell Mean:', min_value=0, max_value=25, value=15)
+years_until_sell_mean = st.sidebar.slider('Years Until Sell Mean:', min_value=0, max_value=100, value=15)
 years_until_sell_std = st.sidebar.slider('Years Until Sell sd:', min_value=0, max_value=10, value=5)
 years_until_sell_list = get_param_distribution(years_until_sell_mean, years_until_sell_std, n_samples, n_bins, as_int=True, title ='Assumed Distribution for Years Until Property Is Sold')
 st.sidebar.write("---")
