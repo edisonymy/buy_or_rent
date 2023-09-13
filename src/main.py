@@ -167,7 +167,7 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV std (as % of invested capital): {np.std(buying_npv_list)/model.DEPOSIT*100:.2f}%')
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
         left_column, right_column = st.columns(2)
-        right_column.write(f"### Buy - Typical Asset Value after {model.years_until_sell} years")
+        right_column.write(f"### Buy - Typical Scenario after {model.years_until_sell} years")
         plot_kde_from_list(buying_fv_list, right_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         right_column.markdown(f"**Total Asset Value: £{model.buying_fv:,.0f}**")
         right_column.markdown(f"***Breakdown:***")
@@ -178,7 +178,7 @@ def generate_combinations_and_calculate_npv(
         right_column.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]")
         
 
-        left_column.write(f"### Rent - Typical Asset Value after {model.years_until_sell} years")
+        left_column.write(f"### Rent - Typical Scenario after {model.years_until_sell} years")
         plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         left_column.markdown(f"**Total Asset Value: £{model.renting_fv:,.0f}**")
         left_column.markdown(f"***Breakdown:***")
