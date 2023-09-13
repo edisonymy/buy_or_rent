@@ -188,7 +188,7 @@ def generate_combinations_and_calculate_npv(
         if model.buying_fv > model.renting_fv:
             text="Typical Return is higher if you buy."
         else:
-            text="Typical Return is higher if you rent."
+            text="Typical Return is higher if you rent and invest the deposit."
         
         st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
@@ -203,7 +203,7 @@ def generate_combinations_and_calculate_npv(
         right_column.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]")
         
 
-        left_column.write(f"### Rent - Asset value after {model.years_until_sell} years")
+        left_column.write(f"### Rent and invest - Asset value after {model.years_until_sell} years")
         plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**")
         left_column.markdown(f"***Breakdown:***")

@@ -7,7 +7,7 @@ from utils.general import get_param_distribution
 
 # Streamlit app title
 st.title('Open Source UK Buy or Rent Simulation Model')
-st.write("Not sure whether it is financially better to buy a property or rent? We use simulations to show possible returns for buying a property or renting given your assumptions.")
+st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions.")
 st.write("Adjust your assumptions on the left sidebar.")
 st.markdown("***Disclaimer: This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app.***")
 st.write("---")
