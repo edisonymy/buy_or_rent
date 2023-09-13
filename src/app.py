@@ -6,7 +6,7 @@ from main import Buy_or_Rent_Model, generate_combinations_and_calculate_npv, gra
 from utils.general import get_param_distribution
 
 # Streamlit app title
-st.title('Buy or Rent Simulation Model')
+st.title('Open Source Buy or Rent Simulation Model')
 st.write("We use simulations to show possible returns for buying a property or renting given your assumptions.")
 st.write("Adjust your assumptions on the left sidebar.")
 st.write("---")
