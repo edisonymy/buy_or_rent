@@ -212,20 +212,18 @@ def generate_combinations_and_calculate_npv(
             left_column.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         else:
             left_column.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
-        
+        st.write('---')
         plot_kde_from_list([buying_fv_list,renting_fv_list], st, figsize=(7, 2), legends = ['Buying', 'Renting'],main_colors = ['orange', 'blue'], title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
-        
-        # st.write(percentiles_df)
-        
         plot_kde_from_list([buying_npv_list], st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
         st.markdown("<span style='font-size: 14px; font-style: italic;'>Net Present Value represents the net gain/loss that result in purchasing the property in present value. If it is positive, then it is financially better to buy a property. Present value is calculated using a future discount rate equal to your assumed investment return. This is equivalent to assuming that any amount you save on rent or mortgage will be invested. </span>", unsafe_allow_html=True)
-        st.write("### Net Present Value Statistics")
-        st.write(f'- Buying is better {100-percentiles_df.loc[5,"Percentile"]:.0f}% of the time')
-        st.write(f"- Mean: £{np.mean(buying_npv_list):,.0f}")
-        st.write(f"- Mean (as % of deposit): {np.mean(buying_npv_list)/model.DEPOSIT*100:.0f}%")
-        st.write(f"- Standard Deviation: £{np.std(buying_npv_list):,.0f}")
-        st.write(f"- Standard Deviation (as % of deposit): {np.std(buying_npv_list)/model.DEPOSIT*100:.0f}%")
-        st.write(f"- Skew: {skew(buying_npv_list):.2f}")
+        # st.write("### Net Present Value Statistics")
+        with st.expander("### Net Present Value Statistics", expanded=False):
+            st.write(f'- Buying is better {100-percentiles_df.loc[5,"Percentile"]:.0f}% of the time')
+            st.write(f"- Mean: £{np.mean(buying_npv_list):,.0f}")
+            st.write(f"- Mean (as % of deposit): {np.mean(buying_npv_list)/model.DEPOSIT*100:.0f}%")
+            st.write(f"- Standard Deviation: £{np.std(buying_npv_list):,.0f}")
+            st.write(f"- Standard Deviation (as % of deposit): {np.std(buying_npv_list)/model.DEPOSIT*100:.0f}%")
+            st.write(f"- Skew: {skew(buying_npv_list):.2f}")
         return percentiles_df, results_df
 
 def graph_kde_plots(results_df, FEATURES, num_cols = 2):

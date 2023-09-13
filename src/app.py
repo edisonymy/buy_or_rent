@@ -8,6 +8,7 @@ from utils.general import get_param_distribution
 
 # Streamlit app title
 st.title('Open Source UK Buy or Rent Simulation Model')
+st.write("---")
 st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions. All parameters are assumed to be uncorrelated.")
 st.markdown("***Disclaimer: This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app.***")
 st.write("---")
@@ -94,8 +95,9 @@ percentiles_df, results_df = generate_combinations_and_calculate_npv(
 )
 
 # Display the results DataFrame
-st.subheader('Correlations Between Parameters and Buying NPV')
-st.write(results_df.corr().iloc[0,1:])
+# st.subheader('Correlations Between Parameters and Buying NPV')
+with st.expander('Correlations Between Parameters and Buying NPV', expanded=False):
+    st.write(results_df.corr().iloc[0,1:])
 plot_button = st.button("Plot Additional Graphs")
 
 # Check if the button is clicked
