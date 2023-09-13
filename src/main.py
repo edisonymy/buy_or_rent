@@ -85,8 +85,8 @@ class Buy_or_Rent_Model():
         self.renting_fv = deposit_fv + fv_buying_cost + fv_STAMP_DUTY #- self.rent_fv
         # self.renting_fv_inflation_adjusted = pv_future_payment(self.renting_fv, self.inflation, self.years_until_sell)
 
-def plot_kde_from_list(buying_npv_list, st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
-    fig, ax = plt.subplots(figsize=(7, 2))
+def plot_kde_from_list(buying_npv_list, st, figsize=(7, 2), title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
+    fig, ax = plt.subplots(figsize=figsize)
     # st.header('Histogram of NPV')
     # plt.figure(figsize=(10,7))
     # sns.kdeplot(data=buying_npv_list, ax=ax, fill=True)
@@ -168,7 +168,7 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
         left_column, right_column = st.columns(2)
         right_column.write(f"### Buy - Typical Asset Value after {model.years_until_sell} years")
-        plot_kde_from_list(buying_fv_list, right_column, title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
+        plot_kde_from_list(buying_fv_list, right_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         right_column.markdown(f"**Total Asset Value: £{model.buying_fv:,.0f}**")
         right_column.markdown(f"***Breakdown:***")
         right_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
@@ -179,7 +179,7 @@ def generate_combinations_and_calculate_npv(
         
 
         left_column.write(f"### Rent - Typical Asset Value after {model.years_until_sell} years")
-        plot_kde_from_list(renting_fv_list, left_column, title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
+        plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         left_column.markdown(f"**Total Asset Value: £{model.renting_fv:,.0f}**")
         left_column.markdown(f"***Breakdown:***")
         left_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
