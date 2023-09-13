@@ -190,8 +190,8 @@ def generate_combinations_and_calculate_npv(
             text="Under current assumptions, typical return is higher if you buy."
         else:
             text="Under current assumptions, typical return is higher if you rent and invest the deposit."
-        # st.markdown(f'**<p style="background-color:#F0F2F6;font-size:32px;border-radius:0%; font-style: italic;">{text}</p>**', unsafe_allow_html=True)
-        st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
+        st.markdown(f'**<p style="background-color:#F0F2F6;font-size:32px;border-radius:0%; font-style: italic;">{text}</p>**', unsafe_allow_html=True)
+        # st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
         right_column.write(f"### Buy - Asset value after {model.years_until_sell} years")
         right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**")
