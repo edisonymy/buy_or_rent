@@ -10,7 +10,6 @@ st.title('Open Source Buy or Rent Simulation Model')
 st.write("Not sure whether it is financially better to buy a property or rent? We use simulations to show possible returns for buying a property or renting given your assumptions.")
 st.write("Adjust your assumptions on the left sidebar.")
 st.write("---")
-# left_column, right_column = st.columns(2)
 
 n_samples = 10000
 n_bins = 30
@@ -69,17 +68,6 @@ st.sidebar.write("---")
 st.sidebar.subheader('Simulation Settings:')
 n_samples_simulation = st.sidebar.slider('Number of Simulation Samples:', min_value=100, max_value=10000, value=1000)
 
-# # Generate data
-# st.header('Generate Data')
-
-# Display data
-# st.subheader('Sample Data:')
-# st.write("mortgage_interest_annual_list:", mortgage_interest_annual_list)
-# st.write("property_price_growth_annual_list:", property_price_growth_annual_list)
-# st.write("rent_increase_list:", rent_increase_list)
-# st.write("investment_return_annual_list:", investment_return_annual_list)
-# st.write("years_until_sell_list:", years_until_sell_list)
-
 # Initialize the model
 model = Buy_or_Rent_Model()
 model.HOUSE_PRICE = house_price
@@ -87,8 +75,6 @@ model.DEPOSIT_MULT = deposit_mult
 model.RENTAL_YIELD = rental_yield
 
 # Generate combinations and calculate NPV
-# st.header('Generate Combinations and Calculate NPV')
-
 percentiles_df, results_df = generate_combinations_and_calculate_npv(
     n_samples_simulation,
     model,
