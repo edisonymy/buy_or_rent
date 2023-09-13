@@ -68,7 +68,7 @@ def get_param_distribution(mean, std, samples, bins,plot=True, as_int = False, t
         return [mean]
     s = np.random.normal(mean, std, samples)
     if plot:
-        fig, ax = plt.subplots(figsize=(4, 3))
+        fig, ax = plt.subplots(figsize=(4, 1.7))
         # plt.hist(s, bins, density=False)
         sns.kdeplot(s,bw_adjust=5)
         plt.title(title)

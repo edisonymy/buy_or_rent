@@ -5,37 +5,42 @@ import matplotlib.pyplot as plt
 from main import Buy_or_Rent_Model, generate_combinations_and_calculate_npv, graph_kde_plots
 from utils.general import get_param_distribution
 
+
 # Streamlit app title
 st.title('Open Source UK Buy or Rent Simulation Model')
-st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions.")
-st.write("Adjust your assumptions on the left sidebar.")
+st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions. All parameters are assumed to be uncorrelated.")
 st.markdown("***Disclaimer: This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app.***")
 st.write("---")
 
 n_samples = 10000
 n_bins = 30
+
+
+
 # User-enterable parameters for data generation
-st.sidebar.header('Your Assumptions')
-# st.sidebar.subheader('Fixed Model Parameters:')
-house_price = st.sidebar.number_input("Property Price", value=300000, step = 5000)
-# rental_yield = st.sidebar.number_input("Rental Yield (used to calculate monthly rent for equivalent property):", value=0.043, step = 0.001, format="%.3f") #st.sidebar.slider('Rental Yield (used to calculate monthly rent for equivalent property):', min_value=0.01, max_value=1.0, value=0.044, format="%.3f")
-# implied_monthly_rent = house_price * rental_yield / 12
-# st.sidebar.write(f"Monthly Rent: {implied_monthly_rent:.0f}")
-monthly_rent = st.sidebar.number_input("Monthly Rent:", value=int(house_price*0.043/12), step = 100)
-rental_yield = (12 * monthly_rent)/ house_price
-st.sidebar.markdown(f"<span style='font-size: 12px;'>Implied Rental Yield: {rental_yield:.3f}</span>", unsafe_allow_html=True)
-text = 'Checkout a rental yield map here: https://www.home.co.uk/company/press/rental_yield_heat_map_london_postcodes.pdf'
-st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
+st.subheader('Your Assumptions')
+with st.expander("Expand", expanded=True):
+    # st.sidebar.subheader('Fixed Model Parameters:')
+    house_price = st.number_input("Property Price", value=300000, step = 5000)
+    # rental_yield = st.sidebar.number_input("Rental Yield (used to calculate monthly rent for equivalent property):", value=0.043, step = 0.001, format="%.3f") #st.sidebar.slider('Rental Yield (used to calculate monthly rent for equivalent property):', min_value=0.01, max_value=1.0, value=0.044, format="%.3f")
+    # implied_monthly_rent = house_price * rental_yield / 12
+    # st.sidebar.write(f"Monthly Rent: {implied_monthly_rent:.0f}")
+    monthly_rent = st.number_input("Monthly Rent:", value=int(house_price*0.043/12), step = 100)
+    rental_yield = (12 * monthly_rent)/ house_price
+    st.markdown(f"<span style='font-size: 12px;'>Implied Rental Yield: {rental_yield:.3f}</span>", unsafe_allow_html=True)
+    text = 'Checkout a rental yield map here: https://www.home.co.uk/company/press/rental_yield_heat_map_london_postcodes.pdf'
+    st.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 
-deposit = st.sidebar.slider('Deposit:', min_value=0, max_value=house_price, value=int(0.4*house_price), step = 1000)
-deposit_mult = deposit/house_price
-# deposit_mult = st.sidebar.slider('Deposit percentage:', min_value=0.01, max_value=1.0, value=0.4)
-# st.sidebar.markdown(f"<span style='font-size: 12px;'>Deposit Amount: {deposit:,.0f}</span>", unsafe_allow_html=True)
-mortgage_length = st.sidebar.slider('Mortgage Length:', min_value=15, max_value=35, value=30, step = 1)
-annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=30000, step = 100)
+    deposit = st.slider('Deposit:', min_value=0, max_value=house_price, value=int(0.4*house_price), step = 1000)
+    deposit_mult = deposit/house_price
+    # deposit_mult = st.sidebar.slider('Deposit percentage:', min_value=0.01, max_value=1.0, value=0.4)
+    # st.sidebar.markdown(f"<span style='font-size: 12px;'>Deposit Amount: {deposit:,.0f}</span>", unsafe_allow_html=True)
+    mortgage_length = st.slider('Mortgage Length:', min_value=15, max_value=35, value=30, step = 1)
+    annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=20000, step = 100)
+    st.markdown("***For advanced options, please use the left sidebar (mobile users please press the top left button).***")
+st.write("---")
 
-st.sidebar.write("---")
-st.sidebar.subheader('Uncertain Model Parameters:')
+st.sidebar.subheader('Advanced Model Parameters:')
 st.sidebar.write("It's hard to predict the future, so this section allows the simulations to reflect your uncertainty. The more uncertain you are about a paramter, the higher the standard deviation (sd) you should assume.")
 mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.06, step = 0.001, format="%.3f")
 mortgage_interest_annual_std = st.sidebar.slider('Mortgage Interest sd:', min_value=0.0, max_value=0.1, value=0.01, step = 0.001, format="%.3f")

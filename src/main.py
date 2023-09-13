@@ -104,19 +104,16 @@ class Buy_or_Rent_Model():
         self.renting_fv = deposit_fv + fv_buying_cost + fv_STAMP_DUTY #- self.rent_fv
         # self.renting_fv_inflation_adjusted = pv_future_payment(self.renting_fv, self.inflation, self.years_until_sell)
 
-def plot_kde_from_list(buying_npv_list, st, figsize=(7, 2), title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
+def plot_kde_from_list(arrays, st, figsize=(7, 2), main_colors = ['green'], legends = None, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
     fig, ax = plt.subplots(figsize=figsize)
-    # st.header('Histogram of NPV')
-    # plt.figure(figsize=(10,7))
-    # sns.kdeplot(data=buying_npv_list, ax=ax, fill=True)
-    
-    # Plot the entire KDE plot in one color
-    sns.kdeplot(data=buying_npv_list, ax=ax, color='green', fill=True, bw_adjust = 2, label='Entire KDE')
+    for num, array in enumerate(arrays):
+        # Plot the entire KDE plot in one color
+        sns.kdeplot(data=array, ax=ax, color=main_colors[num-1], fill=True, bw_adjust = 2, label='Entire KDE')
 
-    # Plot the shaded area to the left of 0 in a different color
-    sns.kdeplot(data=buying_npv_list, ax=ax, color='red', fill=True, bw_adjust = 2, label='Shaded Area', clip=(None, 0))
-    x_low_percentile = np.percentile(buying_npv_list, 0.001)
-    x_high_percentile = np.percentile(buying_npv_list, 99)
+        # Plot the shaded area to the left of 0 in a different color
+        sns.kdeplot(data=array, ax=ax, color='red', fill=True, bw_adjust = 2, label='Shaded Area', clip=(None, 0))
+        x_low_percentile = np.percentile(array, 0.001)
+        x_high_percentile = np.percentile(array, 99)
     
     # Set the axis limits based on the 95th percentile
     ax.xaxis.set_major_formatter(mticker.FuncFormatter(format_with_commas))
@@ -124,6 +121,8 @@ def plot_kde_from_list(buying_npv_list, st, figsize=(7, 2), title = 'Net Present
     ax.set_xlabel(xlabel)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
     ax.set_title(title)
+    if legends:
+        plt.legend(labels=legends)
     st.pyplot(fig)
 
 
@@ -186,14 +185,13 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV std (as % of invested capital): {np.std(buying_npv_list)/model.DEPOSIT*100:.2f}%')
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
         if model.buying_fv > model.renting_fv:
-            text="Under the given assumptions, typical return is higher if you buy."
+            text="Under current assumptions, typical return is higher if you buy."
         else:
-            text="Under the given assumptions, typical return is higher if you rent and invest the deposit."
-        
-        st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
+            text="Under current assumptions, typical return is higher if you rent and invest the deposit."
+        st.markdown(f'**<p style="background-color:#F0F2F6;font-size:32px;border-radius:0%; font-style: italic;">{text}</p>**', unsafe_allow_html=True)
+        # st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
         right_column.write(f"### Buy - Asset value after {model.years_until_sell} years")
-        plot_kde_from_list(buying_fv_list, right_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**")
         right_column.markdown(f"***Breakdown:***")
         right_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
@@ -204,7 +202,7 @@ def generate_combinations_and_calculate_npv(
         
 
         left_column.write(f"### Rent and invest - Asset value after {model.years_until_sell} years")
-        plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
+        # plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**")
         left_column.markdown(f"***Breakdown:***")
         left_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
@@ -213,11 +211,11 @@ def generate_combinations_and_calculate_npv(
         else:
             left_column.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         
-
+        plot_kde_from_list([buying_fv_list,renting_fv_list], st, figsize=(7, 2), legends = ['Buying', 'Renting'],main_colors = ['orange', 'blue'], title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         
         # st.write(percentiles_df)
         
-        plot_kde_from_list(buying_npv_list, st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
+        plot_kde_from_list([buying_npv_list], st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
         st.markdown("<span style='font-size: 14px;'>Net Present Value represents the net gain/loss that result in purchasing the property in present value. If it is positive, then it is financially better to buy a property. Present value is calculated using a future discount rate equal to your assumed investment return. This is equivalent to assuming that any amount you save on rent or mortgage will be invested. </span>", unsafe_allow_html=True)
         st.write("### Net Present Value Statistics")
         st.write(f'- Buying is better {100-percentiles_df.loc[5,"Percentile"]:.0f}% of the time')
