@@ -60,7 +60,7 @@ text = 'Checkout historical rent increases here: https://www.ons.gov.uk/economy/
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 rent_increase_list = get_param_distribution(rent_increase_mean, rent_increase_std, n_samples, n_bins, title ='Assumed Distribution for Average Annual Rent Increase')
 st.sidebar.write("---")
-investment_return_annual_mean = st.sidebar.slider('Investment Return Mean:', min_value=0.01, max_value=0.1, value=0.06, step = 0.001, format="%.3f")
+investment_return_annual_mean = st.sidebar.slider('Investment Return Mean:', min_value=0.01, max_value=0.2, value=0.06, step = 0.001, format="%.3f")
 investment_return_annual_std = st.sidebar.slider('Investment Return sd:', min_value=0.0, max_value=0.05, value=0.02, step = 0.001, format="%.3f")
 text = 'Check out historical stock market returns here: https://www.investopedia.com/ask/answers/042415/what-average-annual-return-sp-500.asp'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
