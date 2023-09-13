@@ -30,7 +30,7 @@ st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allo
 deposit = st.sidebar.slider('Deposit:', min_value=0, max_value=house_price, value=int(0.4*house_price), step = 1000)
 deposit_mult = deposit/house_price
 # deposit_mult = st.sidebar.slider('Deposit percentage:', min_value=0.01, max_value=1.0, value=0.4)
-st.sidebar.markdown(f"<span style='font-size: 12px;'>Deposit Amount: {deposit:,.0f}</span>", unsafe_allow_html=True)
+# st.sidebar.markdown(f"<span style='font-size: 12px;'>Deposit Amount: {deposit:,.0f}</span>", unsafe_allow_html=True)
 mortgage_length = st.sidebar.slider('Mortgage Length:', min_value=15, max_value=35, value=30, step = 1)
 
 st.sidebar.write("---")
