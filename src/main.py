@@ -28,6 +28,9 @@ class Buy_or_Rent_Model():
         self.BUYING_COST_FLAT = 3000 #https://www.movingcostscalculator.co.uk/calculator/
         self.SELLING_COST_MULT = 0.02 #https://www.movingcostscalculator.co.uk/calculator/
         self.ONGOING_COST_MULT = 0.006 # service charge + repairs, council tax and bills are omitted since they are the same whether buying or renting
+        self.ANNUAL_SALARY = 55000
+        self.CGT_ALLOWANCE = 6000
+        self.PERSONAL_ALLOWANCE = 12570
         # Probability distribution
         self.rent_increase = 0.01325 # historical: https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/indexofprivatehousingrentalprices/april2023
         self.property_price_growth_annual = 0.025 # historical average = 0.034 over the last 8 year, adjusted down due to end to abnormally low interest rates; source for historical data: https://www.statista.com/statistics/620414/monthly-house-price-index-in-london-england-uk/
@@ -37,9 +40,25 @@ class Buy_or_Rent_Model():
         # financial modelling params
         self.inflation = 0.02 #on ongoing costs, also for converting fv
         self.adjust_for_inflation = 0
+
+    def get_capital_gains_tax(self):
+        cgt = 0
+        taxable_gains = self.future_house_price - self.HOUSE_PRICE
+        if self.ANNUAL_SALARY > 50271:
+            cgt = taxable_gains * 0.28
+        else:
+            taxable_income = self.ANNUAL_SALARY - self.PERSONAL_ALLOWANCE
+            if taxable_gains - self.CGT_ALLOWANCE + taxable_income <= 50270:
+                cgt = (taxable_gains - self.CGT_ALLOWANCE) * 0.18
+            else:
+                cgt += (50271 - taxable_income) * 0.18
+                cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.28
+        return cgt
+
     def run_calculations(self, adjust_for_inflation_bool = False):
         self.future_house_price = self.HOUSE_PRICE * (1+self.property_price_growth_annual)**self.years_until_sell
-        self.SELLING_COST = self.future_house_price * self.SELLING_COST_MULT
+        self.CGT = self.get_capital_gains_tax()
+        self.SELLING_COST = self.future_house_price * self.SELLING_COST_MULT + self.CGT
         if adjust_for_inflation_bool:
             self.adjust_for_inflation = self.inflation
             # self.SELLING_COST = self.SELLING_COST / float(1+self.adjust_for_inflation)**(self.years_until_sell)
@@ -166,6 +185,12 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV std: £{np.std(buying_npv_list):.2f}')
         # st.write(f'NPV std (as % of invested capital): {np.std(buying_npv_list)/model.DEPOSIT*100:.2f}%')
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
+        if model.buying_fv > model.renting_fv:
+            text="Typical Return is higher if you buy."
+        else:
+            text="Typical Return is higher if you rent."
+        
+        st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
         right_column.write(f"### Buy - Asset value after {model.years_until_sell} years")
         plot_kde_from_list(buying_fv_list, right_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
@@ -173,7 +198,7 @@ def generate_combinations_and_calculate_npv(
         right_column.markdown(f"***Breakdown:***")
         right_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
         right_column.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]")
-        right_column.markdown(f" - Selling cost: :red[ -£{model.SELLING_COST:,.0f}]")
+        right_column.markdown(f" - Selling cost (including Capital Gains Tax): :red[ -£{model.SELLING_COST:,.0f}]")
         right_column.markdown(f" - Total Mortgage Payments (future value at time of sale): :red[ -£{model.fv_mortgage_payments:,.0f}]")
         right_column.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]")
         
@@ -189,12 +214,7 @@ def generate_combinations_and_calculate_npv(
             left_column.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         
 
-        if model.buying_fv > model.renting_fv:
-            text="Typical Return is higher if you buy."
-        else:
-            text="Typical Return is higher if you rent."
         
-        st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         # st.write(percentiles_df)
         
         plot_kde_from_list(buying_npv_list, st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')

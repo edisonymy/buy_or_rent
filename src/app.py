@@ -6,8 +6,8 @@ from main import Buy_or_Rent_Model, generate_combinations_and_calculate_npv, gra
 from utils.general import get_param_distribution
 
 # Streamlit app title
-st.title('Open Source Buy or Rent Simulation Model')
-st.write("Not sure whether it is financially better to buy a property or rent? We use simulations to show possible returns for buying a property or renting given your assumptions.")
+st.title('Open Source UK Buy or Rent Simulation Model')
+st.write("Not sure whether it is financially better to buy a property or rent? We use simulations to show possible returns for buying a property or renting given your assumptions. This model assumes that you are in England. Different countries might have different tax rules.")
 st.write("Adjust your assumptions on the left sidebar.")
 st.write("---")
 
@@ -16,7 +16,7 @@ n_bins = 30
 # User-enterable parameters for data generation
 st.sidebar.header('Your Assumptions')
 # st.sidebar.subheader('Fixed Model Parameters:')
-house_price = st.sidebar.number_input("Property Price", value=300000, step = 10000)
+house_price = st.sidebar.number_input("Property Price", value=300000, step = 5000)
 # rental_yield = st.sidebar.number_input("Rental Yield (used to calculate monthly rent for equivalent property):", value=0.043, step = 0.001, format="%.3f") #st.sidebar.slider('Rental Yield (used to calculate monthly rent for equivalent property):', min_value=0.01, max_value=1.0, value=0.044, format="%.3f")
 # implied_monthly_rent = house_price * rental_yield / 12
 # st.sidebar.write(f"Monthly Rent: {implied_monthly_rent:.0f}")
@@ -31,6 +31,7 @@ deposit_mult = deposit/house_price
 # deposit_mult = st.sidebar.slider('Deposit percentage:', min_value=0.01, max_value=1.0, value=0.4)
 # st.sidebar.markdown(f"<span style='font-size: 12px;'>Deposit Amount: {deposit:,.0f}</span>", unsafe_allow_html=True)
 mortgage_length = st.sidebar.slider('Mortgage Length:', min_value=15, max_value=35, value=30, step = 1)
+annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=30000, step = 100)
 
 st.sidebar.write("---")
 st.sidebar.subheader('Uncertain Model Parameters:')
@@ -73,6 +74,7 @@ model = Buy_or_Rent_Model()
 model.HOUSE_PRICE = house_price
 model.DEPOSIT_MULT = deposit_mult
 model.RENTAL_YIELD = rental_yield
+model.ANNUAL_SALARY = annual_income
 
 # Generate combinations and calculate NPV
 percentiles_df, results_df = generate_combinations_and_calculate_npv(
