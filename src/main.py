@@ -218,7 +218,7 @@ def generate_combinations_and_calculate_npv(
         # st.write(percentiles_df)
         
         plot_kde_from_list([buying_npv_list], st, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
-        st.markdown("<span style='font-size: 14px;'>Net Present Value represents the net gain/loss that result in purchasing the property in present value. If it is positive, then it is financially better to buy a property. Present value is calculated using a future discount rate equal to your assumed investment return. This is equivalent to assuming that any amount you save on rent or mortgage will be invested. </span>", unsafe_allow_html=True)
+        st.markdown("<span style='font-size: 14px; font-style: italic;'>Net Present Value represents the net gain/loss that result in purchasing the property in present value. If it is positive, then it is financially better to buy a property. Present value is calculated using a future discount rate equal to your assumed investment return. This is equivalent to assuming that any amount you save on rent or mortgage will be invested. </span>", unsafe_allow_html=True)
         st.write("### Net Present Value Statistics")
         st.write(f'- Buying is better {100-percentiles_df.loc[5,"Percentile"]:.0f}% of the time')
         st.write(f"- Mean: £{np.mean(buying_npv_list):,.0f}")
