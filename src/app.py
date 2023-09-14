@@ -10,7 +10,8 @@ from utils.general import get_param_distribution
 st.title('Open Source UK Buy or Rent Simulation Model')
 st.write("---")
 st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions. All parameters are assumed to be uncorrelated.")
-st.markdown("***Disclaimer: This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. Source code can be found at: https://github.com/edisonymy/buy_or_rent***")
+st.write("If you found this useful and want to support me, consider buying me a coffee here: https://www.buymeacoffee.com/edisonymyt")
+st.markdown("***Disclaimer: The app is currently in Beta. This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. Source code can be found at: https://github.com/edisonymy/buy_or_rent***")
 st.write("---")
 
 n_samples = 10000
@@ -47,7 +48,7 @@ cgt_bol = st.sidebar.checkbox('I pay capital gains tax on the property.', value 
 annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=20000, step = 100)
 st.sidebar.subheader('Advanced Model Parameters:')
 st.sidebar.write("It's hard to predict the future, so this section allows the simulations to reflect your uncertainty. The more uncertain you are about a paramter, the higher the standard deviation (sd) you should assume.")
-mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.05, step = 0.001, format="%.3f")
+mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.055, step = 0.001, format="%.3f")
 mortgage_interest_annual_std = st.sidebar.slider('Mortgage Interest sd:', min_value=0.0, max_value=0.1, value=0.012, step = 0.001, format="%.3f")
 text = 'Check out historical mortgage rates here: https://tradingeconomics.com/united-kingdom/mortgage-rate'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
