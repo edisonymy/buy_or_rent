@@ -43,17 +43,19 @@ with st.expander("Expand", expanded=True):
 
 # sidebar 
 st.write("---")
-stamp_duty_bol = st.sidebar.checkbox('I pay stamp duty.', value = False)
-cgt_bol = st.sidebar.checkbox('I pay capital gains tax on the property.', value = False)
-ongoing_cost = st.sidebar.number_input("Annual maintenance plus service charge:", value=int(house_price*0.006), step = 100)
-buying_cost = st.sidebar.number_input("Buying costs (excluding stamp duty):", value=3000, step = 100)
-annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=20000, step = 100)
-inflation = st.sidebar.number_input('Inflation:', min_value=0.0, max_value=1.0, value=0.02, step = 0.001, format="%.3f")
+st.sidebar.subheader('Additional Parameters:')
+stamp_duty_bol = st.sidebar.checkbox('I pay Stamp Duty.', value = False, help="Stamp Duty (UK): A tax paid by the buyer when purchasing property in the United Kingdom. The amount of Stamp Duty depends on the property's purchase price and may include additional rates for second homes and buy-to-let properties.") 
+cgt_bol = st.sidebar.checkbox('I pay capital gains tax on the property.', value = False, help = "Capital Gains Tax (CGT): A tax levied on the profit (capital gain) made from the sale or disposal of assets such as property, investments, or valuable possessions. The amount of CGT owed is typically calculated based on the difference between the purchase price and the selling price of the asset. Different rates may apply to individuals and businesses, and there are often exemptions and allowances that can reduce the taxable amount.")
+ongoing_cost = st.sidebar.number_input("Annual combined maintenance and service charge:", value=int(house_price*0.006), step = 100, help="The total annual cost associated with maintaining and servicing a property, including expenses such as property management fees, maintenance fees, and other related charges.")
+buying_cost = st.sidebar.number_input("Buying cost (excluding stamp duty):", value=3000, step = 100, help="This includes laywer's fee, mortgage lender fees, surveyor's fee, valuation fees and other fees you expect to pay at the time of purchase.")
+annual_income = st.sidebar.number_input("Annual Salary", value=20000, step = 100, help="This should be set to the expected salary at time of sale, required to calculate capital gains tax.")
+selling_cost_no_cgt = st.sidebar.number_input("Selling cost (excluding Capital Gains Tax):", value=int(house_price*0.02), step = 100, help= "Total expense incurred when selling a property. This typically include real estate agent commissions, legal fees, advertising expenses, and any necessary repairs or renovations to prepare the property for sale.")
+inflation = st.sidebar.number_input('Inflation:', min_value=0.0, max_value=1.0, value=0.02, step = 0.001, format="%.3f", help="Used for inflation adjustment only. It does not affect the model.")
 # uncertain parameters
 st.sidebar.subheader('Advanced Model Parameters:')
 st.sidebar.write("It's hard to predict the future, so this section allows the simulations to reflect your uncertainty. The more uncertain you are about a paramter, the higher the standard deviation (sd) you should assume.")
-mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.055, step = 0.001, format="%.3f")
-mortgage_interest_annual_std = st.sidebar.slider('Mortgage Interest sd:', min_value=0.0, max_value=0.1, value=0.012, step = 0.001, format="%.3f")
+mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Rate Mean:', min_value=0.01, max_value=0.1, value=0.055, step = 0.001, format="%.3f")
+mortgage_interest_annual_std = st.sidebar.slider('Mortgage Interest Rate sd:', min_value=0.0, max_value=0.1, value=0.012, step = 0.001, format="%.3f")
 text = 'Check out historical mortgage rates here: https://tradingeconomics.com/united-kingdom/mortgage-rate'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 mortgage_interest_annual_list = get_param_distribution(mortgage_interest_annual_mean, mortgage_interest_annual_std, n_samples, n_bins, title ='Assumed Distribution for Average Mortgage Interest Rate')

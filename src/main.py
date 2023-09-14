@@ -112,9 +112,9 @@ class Buy_or_Rent_Model():
         if self.adjust_for_inflation > 0:
             self.SELLING_COST = self.SELLING_COST / float(1+self.adjust_for_inflation)**(self.years_until_sell)
             self.future_house_price = self.future_house_price / float(1+self.adjust_for_inflation)**(self.years_until_sell)
-        fv_ongoing_cost = annuity_fv(self.HOUSE_PRICE * self.ONGOING_COST_MULT,self.discount_rate, self.years_until_sell, self.inflation, adjust_for_inflation = self.adjust_for_inflation)
+        self.fv_ongoing_cost = annuity_fv(self.HOUSE_PRICE * self.ONGOING_COST_MULT,self.discount_rate, self.years_until_sell, self.inflation, adjust_for_inflation = self.adjust_for_inflation)
         self.rent_fv = annuity_fv(self.HOUSE_PRICE*self.RENTAL_YIELD, self.discount_rate, self.years_until_sell, self.rent_increase, adjust_for_inflation = self.adjust_for_inflation)
-        self.buying_fv = self.future_house_price + self.rent_fv - self.SELLING_COST - fv_ongoing_cost -  self.fv_mortgage_payments
+        self.buying_fv = self.future_house_price + self.rent_fv - self.SELLING_COST - self.fv_ongoing_cost -  self.fv_mortgage_payments
         # self.buying_pv = self.pv_of_future_house_price + self.pv_rent_saved - self.pv_of_selling_cost - self.pv_ongoing_cost -  self.pv_mortage_payments
         # self.buying_fv_inflation_adjusted = pv_future_payment(self.buying_fv, self.inflation, self.years_until_sell)
 
@@ -129,16 +129,16 @@ class Buy_or_Rent_Model():
         # self.renting_pv = self.total_investment
         # self.renting_fv_inflation_adjusted = pv_future_payment(self.renting_fv, self.inflation, self.years_until_sell)
 
-def plot_kde_from_list(arrays, st, figsize=(7, 2), main_colors = ['green'], legends = None, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
+def plot_kde_from_list(arrays, st, figsize=(7, 2), main_colors = ['green'], secondary_color = 'red', legends = None, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
     fig, ax = plt.subplots(figsize=figsize)
     x_lower = []
     x_higher = []
     for num, array in enumerate(arrays):
         # Plot the entire KDE plot in one color
-        sns.kdeplot(data=array, ax=ax, color=main_colors[num-1], fill=True, bw_adjust = 2, label='Entire KDE')
+        sns.kdeplot(data=array, ax=ax, color=main_colors[num-1], fill=True, bw_adjust = 2, label='Entire KDE', clip=(0, None))
 
         # Plot the shaded area to the left of 0 in a different color
-        sns.kdeplot(data=array, ax=ax, color='red', fill=True, bw_adjust = 2, label='Shaded Area', clip=(None, 0))
+        sns.kdeplot(data=array, ax=ax, color=secondary_color, fill=True, bw_adjust = 2, label='Shaded Area', clip=(None, 0))
         # x_low_percentile = np.percentile(array, 0.001)
         # x_high_percentile = np.percentile(array, 99)
         x_mean = np.mean(array)
@@ -217,37 +217,38 @@ def generate_combinations_and_calculate_npv(
         # st.write(f'NPV std (as % of invested capital): {np.std(buying_npv_list)/model.DEPOSIT*100:.2f}%')
         # st.write(f'NPV skew: {skew(buying_npv_list):.2f}')
         if model.buying_fv > model.renting_fv:
-            text="Under current assumptions, typical return is higher if you buy."
+            text="Under current assumptions, typical return is higher if you <strong>buy</strong>."
         else:
-            text="Under current assumptions, typical return is higher if you rent and invest the deposit."
-        st.markdown(f'**<p style="background-color:#F0F2F6;font-size:32px;border-radius:0%; font-style: italic;">{text}</p>**', unsafe_allow_html=True)
+            text="Under current assumptions, typical return is higher if you <strong>rent and invest the deposit</strong>."
+        st.markdown(f'<p style="background-color:#F0F2F6;font-size:32px;border-radius:0%; font-style: italic;">{text}</p>', unsafe_allow_html=True)
         # st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
         right_column.write(f"### Buy - Asset future value after {model.years_until_sell} years")
-        right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**")
+        right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**", help="All components are converted to future value at the time of sale.")
         right_column.markdown(f"***Breakdown:***")
         right_column.markdown(f" - Capital Invested (deposit): £{model.DEPOSIT:,.0f}")
         right_column.markdown(f" - Capital Invested (buying cost + stamp duty, if any): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")        
-        right_column.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]")
-        right_column.markdown(f" - Selling cost (including Capital Gains Tax): :red[ -£{model.SELLING_COST:,.0f}]")
-        right_column.markdown(f" - Total Mortgage Payments (future value at time of sale): :red[ -£{model.fv_mortgage_payments:,.0f}]")
+        right_column.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]", help="Calculated using the property price growth rate set in the left sidebar.")
+        right_column.markdown(f" - Selling cost (including Capital Gains Tax): :red[ -£{model.SELLING_COST:,.0f}]",help= "Total expenses incurred when selling a property. These costs typically include real estate agent commissions, legal fees, advertising expenses, and any necessary repairs or renovations to prepare the property for sale.")
+        right_column.markdown(f" - Total maintenance and service costs: :red[ -£{model.fv_ongoing_cost:,.0f}]",help="Future value at the time of sale for the total cost associated with maintaining and servicing a property, including expenses such as property management fees, maintenance fees, and other related charges.")
+        right_column.markdown(f" - Total Mortgage Payments: :red[ -£{model.fv_mortgage_payments:,.0f}]", help="This is higher than the sum of all mortgage payments since the payments are converted to their")
         right_column.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]")
         
 
         left_column.write(f"### Rent and invest - Asset future value after {model.years_until_sell} years")
         # plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
-        left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**")
+        left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**", help="All components are converted to future value at the time of sale.")
         left_column.markdown(f"***Breakdown:***")
         left_column.markdown(f" - Capital Invested (deposit): £{model.DEPOSIT:,.0f}")
         left_column.markdown(f" - Capital Invested (buying cost + stamp duty, if any): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")    
-        left_column.markdown(f" - Capital Gains Tax: :red[-£{model.cgt_investment:,.0f}]")
+        left_column.markdown(f" - Capital Gains Tax: :red[-£{model.cgt_investment:,.0f}]", help='Your tax rate is determined by the annual salary set in the left sidebar.')
         if model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY) >= 0:
-            left_column.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
+            left_column.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]", help="Calculated with the investment return rated provided in the left sidebar.")
         else:
             left_column.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         st.write('---')
         plot_kde_from_list([buying_fv_list,renting_fv_list], st, figsize=(7, 2), legends = ['Buying', 'Renting'],main_colors = ['orange', 'blue'], title = 'Future Asset Value Probability Distribution', xlabel = 'Asset Value')
-        plot_kde_from_list([buying_npv_list], st, legends = ['Net gain if buy', 'Net gain if rent'],main_colors = ['orange', 'blue'], title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
+        plot_kde_from_list([buying_npv_list], st, legends = ['Buying is better', 'Renting is better'],main_colors = ['blue'], secondary_color = 'orange', title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')
         st.markdown("<span style='font-size: 14px; font-style: italic;'>Net Present Value represents the net gain/loss that result in purchasing the property in present value. If it is positive, then it is financially better to buy a property. Present value is calculated using a future discount rate equal to your assumed investment return. This is equivalent to assuming that any amount you save on rent or mortgage will be invested. </span>", unsafe_allow_html=True)
         # st.write("### Net Present Value Statistics")
         with st.expander("### Net Present Value Statistics", expanded=False):
