@@ -107,7 +107,7 @@ percentiles_df, results_df = generate_combinations_and_calculate_npv(
 # st.subheader('Correlations Between Parameters and Buying NPV')
 with st.expander('Correlations Between Parameters and Buying NPV', expanded=False):
     st.write(results_df.corr().iloc[0,1:])
-plot_button = st.button("Plot Additional Graphs")
+# plot_button = st.button("Plot Additional Graphs")
 
 # Check if the button is clicked
 # if plot_button:
