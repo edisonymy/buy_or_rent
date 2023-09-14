@@ -31,7 +31,7 @@ buy_me_a_coffee_html = """
 
 # Display the custom CSS and the button in the Streamlit app
 st.components.v1.html(custom_css + buy_me_a_coffee_html)
-st.markdown("***Disclaimer: The app is currently in Beta. This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. The source code can be found at: https://github.com/edisonymy/buy_or_rent***")
+# st.markdown("***Disclaimer: The app is currently in Beta. This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. The source code can be found at: https://github.com/edisonymy/buy_or_rent***")
 st.write("---")
 
 n_samples = 10000
