@@ -31,6 +31,8 @@ class Buy_or_Rent_Model():
         self.ANNUAL_SALARY = 55000
         self.CGT_ALLOWANCE = 6000
         self.PERSONAL_ALLOWANCE = 12570
+        self.CGT_BOL = True
+        self.STAMP_DUTY_BOL = True
         # Probability distribution
         self.rent_increase = 0.01325 # historical: https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/indexofprivatehousingrentalprices/april2023
         self.property_price_growth_annual = 0.025 # historical average = 0.034 over the last 8 year, adjusted down due to end to abnormally low interest rates; source for historical data: https://www.statista.com/statistics/620414/monthly-house-price-index-in-london-england-uk/
@@ -43,16 +45,17 @@ class Buy_or_Rent_Model():
 
     def get_capital_gains_tax(self):
         cgt = 0
-        taxable_gains = self.future_house_price - self.HOUSE_PRICE
-        if self.ANNUAL_SALARY > 50271:
-            cgt = taxable_gains * 0.28
-        else:
-            taxable_income = self.ANNUAL_SALARY - self.PERSONAL_ALLOWANCE
-            if taxable_gains - self.CGT_ALLOWANCE + taxable_income <= 50270:
-                cgt = (taxable_gains - self.CGT_ALLOWANCE) * 0.18
+        if self.CGT_BOL:
+            taxable_gains = self.future_house_price - self.HOUSE_PRICE
+            if self.ANNUAL_SALARY > 50271:
+                cgt = taxable_gains * 0.28
             else:
-                cgt += (50271 - taxable_income) * 0.18
-                cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.28
+                taxable_income = self.ANNUAL_SALARY - self.PERSONAL_ALLOWANCE
+                if taxable_gains - self.CGT_ALLOWANCE + taxable_income <= 50270:
+                    cgt = (taxable_gains - self.CGT_ALLOWANCE) * 0.18
+                else:
+                    cgt += (50271 - taxable_income) * 0.18
+                    cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.28
         return cgt
 
     def run_calculations(self, adjust_for_inflation_bool = False):
@@ -64,7 +67,10 @@ class Buy_or_Rent_Model():
             # self.SELLING_COST = self.SELLING_COST / float(1+self.adjust_for_inflation)**(self.years_until_sell)
             # self.future_house_price = self.future_house_price / float(1+self.adjust_for_inflation)**(self.years_until_sell)
         self.monthly_rent = self.HOUSE_PRICE * self.RENTAL_YIELD /12
-        self.STAMP_DUTY = get_stamp_duty_next_home(self.HOUSE_PRICE)
+        if self.STAMP_DUTY_BOL:
+            self.STAMP_DUTY = get_stamp_duty_next_home(self.HOUSE_PRICE)
+        else:
+            self.STAMP_DUTY = 0
         self.discount_rate = self.investment_return_annual
         self.DEPOSIT = self.HOUSE_PRICE * self.DEPOSIT_MULT
         
@@ -196,7 +202,8 @@ def generate_combinations_and_calculate_npv(
         right_column.write(f"### Buy - Asset value after {model.years_until_sell} years")
         right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**")
         right_column.markdown(f"***Breakdown:***")
-        right_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
+        right_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT:,.0f}")
+        right_column.markdown(f" - Capital Invested (buying cost + stamp duty): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")        
         right_column.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]")
         right_column.markdown(f" - Selling cost (including Capital Gains Tax): :red[ -£{model.SELLING_COST:,.0f}]")
         right_column.markdown(f" - Total Mortgage Payments (future value at time of sale): :red[ -£{model.fv_mortgage_payments:,.0f}]")
@@ -207,7 +214,8 @@ def generate_combinations_and_calculate_npv(
         # plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
         left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**")
         left_column.markdown(f"***Breakdown:***")
-        left_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")
+        left_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT:,.0f}")
+        left_column.markdown(f" - Capital Invested (buying cost + stamp duty): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")    
         if model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY) >= 0:
             left_column.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         else:

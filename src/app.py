@@ -37,10 +37,14 @@ with st.expander("Expand", expanded=True):
     # deposit_mult = st.sidebar.slider('Deposit percentage:', min_value=0.01, max_value=1.0, value=0.4)
     # st.sidebar.markdown(f"<span style='font-size: 12px;'>Deposit Amount: {deposit:,.0f}</span>", unsafe_allow_html=True)
     mortgage_length = st.slider('Mortgage Length:', min_value=15, max_value=35, value=30, step = 1)
-    annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=20000, step = 100)
+    
     st.markdown("***For advanced options, please use the left sidebar (mobile users please press the top left button).***")
 st.write("---")
-
+ongoing_cost = st.number_input("Annual maintenance plus service charge:", value=int(house_price*0.006), step = 100)
+buying_cost = st.number_input("Buying costs (excluding stamp duty):", value=3000, step = 100)
+stamp_duty_bol = st.sidebar.checkbox('I pay stamp duty.', value = True)
+cgt_bol = st.sidebar.checkbox('I pay capital gains tax.', value = True)
+annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=20000, step = 100)
 st.sidebar.subheader('Advanced Model Parameters:')
 st.sidebar.write("It's hard to predict the future, so this section allows the simulations to reflect your uncertainty. The more uncertain you are about a paramter, the higher the standard deviation (sd) you should assume.")
 mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.06, step = 0.001, format="%.3f")
@@ -83,6 +87,10 @@ model.DEPOSIT_MULT = deposit_mult
 model.RENTAL_YIELD = rental_yield
 model.MORTGAGE_LENGTH = mortgage_length
 model.ANNUAL_SALARY = annual_income
+model.ONGOING_COST_MULT = ongoing_cost/house_price
+model.BUYING_COST_FLAT = buying_cost
+model.STAMP_DUTY_BOL = stamp_duty_bol
+model.CGT_BOL = cgt_bol
 
 # Generate combinations and calculate NPV
 percentiles_df, results_df = generate_combinations_and_calculate_npv(
