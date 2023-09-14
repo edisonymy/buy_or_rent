@@ -40,12 +40,16 @@ with st.expander("Expand", expanded=True):
     mortgage_length = st.slider('Mortgage Length:', min_value=15, max_value=35, value=30, step = 1)
     
     st.markdown("***For advanced options, please use the left sidebar (mobile users please press the top left button).***")
+
+# sidebar 
 st.write("---")
-ongoing_cost = st.number_input("Annual maintenance plus service charge:", value=int(house_price*0.006), step = 100)
-buying_cost = st.number_input("Buying costs (excluding stamp duty):", value=3000, step = 100)
-stamp_duty_bol = st.sidebar.checkbox('I pay stamp duty.', value = True)
-cgt_bol = st.sidebar.checkbox('I pay capital gains tax on the property.', value = True)
+stamp_duty_bol = st.sidebar.checkbox('I pay stamp duty.', value = False)
+cgt_bol = st.sidebar.checkbox('I pay capital gains tax on the property.', value = False)
+ongoing_cost = st.sidebar.number_input("Annual maintenance plus service charge:", value=int(house_price*0.006), step = 100)
+buying_cost = st.sidebar.number_input("Buying costs (excluding stamp duty):", value=3000, step = 100)
 annual_income = st.sidebar.number_input("Annual Salary (at time of sale, required to calculate capital gains tax)", value=20000, step = 100)
+inflation = st.sidebar.number_input('Inflation:', min_value=0.0, max_value=1.0, value=0.02, step = 0.001, format="%.3f")
+# uncertain parameters
 st.sidebar.subheader('Advanced Model Parameters:')
 st.sidebar.write("It's hard to predict the future, so this section allows the simulations to reflect your uncertainty. The more uncertain you are about a paramter, the higher the standard deviation (sd) you should assume.")
 mortgage_interest_annual_mean = st.sidebar.slider('Mortgage Interest Mean:', min_value=0.01, max_value=0.1, value=0.055, step = 0.001, format="%.3f")
@@ -60,7 +64,7 @@ text = 'Check out historical property price growth here: https://www.ons.gov.uk/
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
 property_price_growth_annual_list = get_param_distribution(property_price_growth_annual_mean, property_price_growth_annual_std, n_samples, n_bins, title ='Assumed Distribution for Annual Property Value Growth')
 st.sidebar.write("---")
-rent_increase_mean = st.sidebar.slider('Rent Increase Mean:', min_value=0.01, max_value=0.1, value=0.01325, step = 0.001, format="%.3f")
+rent_increase_mean = st.sidebar.slider('Rent Increase Mean:', min_value=0.01, max_value=0.1, value=0.02, step = 0.001, format="%.3f")
 rent_increase_std = st.sidebar.slider('Rent Increase sd:', min_value=0.0, max_value=0.05, value=0.01, step = 0.001, format="%.3f")
 text = 'Checkout historical rent increases here: https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/indexofprivatehousingrentalprices/july2023'
 st.sidebar.markdown(f"<span style='font-size: 11px;'>{text}</span>", unsafe_allow_html=True)
@@ -79,7 +83,7 @@ st.sidebar.write("---")
 # n_samples = st.sidebar.slider('Number of Samples:', min_value=100, max_value=50000, value=10000)
 # n_bins = st.sidebar.slider('Number of Bins:', min_value=10, max_value=100, value=30)
 st.sidebar.subheader('Simulation Settings:')
-n_samples_simulation = st.sidebar.slider('Number of Simulation Samples:', min_value=100, max_value=10000, value=1000)
+n_samples_simulation = st.sidebar.slider('Number of Simulation Samples:', min_value=100, max_value=10000, value=500)
 
 # Initialize the model
 model = Buy_or_Rent_Model()
@@ -92,6 +96,7 @@ model.ONGOING_COST_MULT = ongoing_cost/house_price
 model.BUYING_COST_FLAT = buying_cost
 model.STAMP_DUTY_BOL = stamp_duty_bol
 model.CGT_BOL = cgt_bol
+model.inflation = inflation
 
 # Generate combinations and calculate NPV
 percentiles_df, results_df = generate_combinations_and_calculate_npv(
