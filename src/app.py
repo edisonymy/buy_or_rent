@@ -10,8 +10,28 @@ from utils.general import get_param_distribution
 st.title('Open Source UK Buy or Rent Simulation Model')
 st.write("---")
 st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions. All parameters are assumed to be uncorrelated.")
-st.write("If you found this useful and want to support me, consider buying me a coffee here: https://www.buymeacoffee.com/edisonymyt")
-st.markdown("***Disclaimer: The app is currently in Beta. This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. Source code can be found at: https://github.com/edisonymy/buy_or_rent***")
+st.write("If you found this useful and want to support me, consider buying me a coffee here:")
+custom_css = """
+<style>
+    /* Adjust the button size */
+    .bmc-button {
+        width: 10px; /* Adjust the width as needed */
+        height: 20px; /* Adjust the height as needed */
+    }
+</style>
+"""
+
+# Embed the "Buy Me a Coffee" button script with custom CSS
+buy_me_a_coffee_html = """
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+    data-name="bmc-button" data-slug="edisonymyt" data-color="#FFDD00" data-emoji="☕" data-font="Cookie"
+    data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000"
+    data-coffee-color="#ffffff" ></script>
+"""
+
+# Display the custom CSS and the button in the Streamlit app
+st.components.v1.html(custom_css + buy_me_a_coffee_html)
+st.markdown("***Disclaimer: The app is currently in Beta. This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. The source code can be found at: https://github.com/edisonymy/buy_or_rent***")
 st.write("---")
 
 n_samples = 10000
@@ -46,6 +66,7 @@ st.write("---")
 st.sidebar.subheader('Additional Parameters:')
 stamp_duty_bol = st.sidebar.checkbox('I pay Stamp Duty.', value = False, help="Stamp Duty (UK): A tax paid by the buyer when purchasing property in the United Kingdom. The amount of Stamp Duty depends on the property's purchase price and may include additional rates for second homes and buy-to-let properties.") 
 cgt_bol = st.sidebar.checkbox('I pay capital gains tax on the property.', value = False, help = "Capital Gains Tax (CGT): A tax levied on the profit (capital gain) made from the sale or disposal of assets such as property, investments, or valuable possessions. The amount of CGT owed is typically calculated based on the difference between the purchase price and the selling price of the asset. Different rates may apply to individuals and businesses, and there are often exemptions and allowances that can reduce the taxable amount.")
+cgt_investment_bol = st.sidebar.checkbox('I pay capital gains tax on the investment.', value = False, help = "Capital Gains Tax (CGT): A tax levied on the profit (capital gain) made from the sale or disposal of assets such as property, investments, or valuable possessions. The amount of CGT owed is typically calculated based on the difference between the purchase price and the selling price of the asset. Different rates may apply to individuals and businesses, and there are often exemptions and allowances that can reduce the taxable amount.")
 ongoing_cost = st.sidebar.number_input("Annual combined maintenance and service charge:", value=int(house_price*0.006), step = 100, help="The total annual cost associated with maintaining and servicing a property, including expenses such as property management fees, maintenance fees, and other related charges.")
 buying_cost = st.sidebar.number_input("Buying cost (excluding stamp duty):", value=3000, step = 100, help="This includes laywer's fee, mortgage lender fees, surveyor's fee, valuation fees and other fees you expect to pay at the time of purchase.")
 annual_income = st.sidebar.number_input("Annual Salary", value=20000, step = 100, help="This should be set to the expected salary at time of sale, required to calculate capital gains tax.")
@@ -98,6 +119,7 @@ model.ONGOING_COST_MULT = ongoing_cost/house_price
 model.BUYING_COST_FLAT = buying_cost
 model.STAMP_DUTY_BOL = stamp_duty_bol
 model.CGT_BOL = cgt_bol
+model.CGT_INVESTMENT_BOL = cgt_investment_bol
 model.inflation = inflation
 
 # Generate combinations and calculate NPV

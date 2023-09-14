@@ -32,6 +32,7 @@ class Buy_or_Rent_Model():
         self.CGT_ALLOWANCE = 6000
         self.PERSONAL_ALLOWANCE = 12570
         self.CGT_BOL = True
+        self.CGT_INVESTMENT_BOL = False
         self.STAMP_DUTY_BOL = True
         # Probability distribution
         self.rent_increase = 0.01325 # historical: https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/indexofprivatehousingrentalprices/april2023
@@ -60,17 +61,17 @@ class Buy_or_Rent_Model():
     
     def get_capital_gains_tax_investment(self):
         cgt = 0
-        # if self.CGT_BOL:
-        taxable_gains = self.total_investment_fv - self.total_investment
-        if self.ANNUAL_SALARY > 50271:
-            cgt = taxable_gains * 0.2
-        else:
-            taxable_income = self.ANNUAL_SALARY - self.PERSONAL_ALLOWANCE
-            if taxable_gains - self.CGT_ALLOWANCE + taxable_income <= 50270:
-                cgt = (taxable_gains - self.CGT_ALLOWANCE) * 0.1
+        if self.CGT_INVESTMENT_BOL:
+            taxable_gains = self.total_investment_fv - self.total_investment
+            if self.ANNUAL_SALARY > 50271:
+                cgt = taxable_gains * 0.2
             else:
-                cgt += (50271 - taxable_income) * 0.1
-                cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.2
+                taxable_income = self.ANNUAL_SALARY - self.PERSONAL_ALLOWANCE
+                if taxable_gains - self.CGT_ALLOWANCE + taxable_income <= 50270:
+                    cgt = (taxable_gains - self.CGT_ALLOWANCE) * 0.1
+                else:
+                    cgt += (50271 - taxable_income) * 0.1
+                    cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.2
         return cgt
 
     def run_calculations(self, adjust_for_inflation_bool = False):
