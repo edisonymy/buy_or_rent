@@ -1,4 +1,4 @@
-# buy_or_rent
+# Opensource Buy or Rent Calculator
 https://buy-or-rent.streamlit.app/
 
 tl;dr: I was frustrated by online buy vs rent calculators because they 1. tend to ignore the time value of money, and 2. Don't reflect risk and uncertainty. So I made my own open-source calculator.
