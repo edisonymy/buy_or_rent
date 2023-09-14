@@ -110,6 +110,6 @@ with st.expander('Correlations Between Parameters and Buying NPV', expanded=Fals
 plot_button = st.button("Plot Additional Graphs")
 
 # Check if the button is clicked
-if plot_button:
-    FEATURES = ['mortgage_interest_annual', 'property_price_growth_annual', 'rent_increase', 'investment_return_annual', 'years_until_sell']
-    graph_kde_plots(results_df,FEATURES)
+# if plot_button:
+#     FEATURES = ['mortgage_interest_annual', 'property_price_growth_annual', 'rent_increase', 'investment_return_annual', 'years_until_sell']
+#     graph_kde_plots(results_df,FEATURES)
