@@ -43,7 +43,7 @@ class Buy_or_Rent_Model():
         self.inflation = 0.02 #on ongoing costs, also for converting fv
         self.adjust_for_inflation = 0
 
-    def get_capital_gains_tax(self):
+    def get_capital_gains_tax_property(self):
         cgt = 0
         if self.CGT_BOL:
             taxable_gains = self.future_house_price - self.HOUSE_PRICE
@@ -57,10 +57,25 @@ class Buy_or_Rent_Model():
                     cgt += (50271 - taxable_income) * 0.18
                     cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.28
         return cgt
+    
+    def get_capital_gains_tax_investment(self):
+        cgt = 0
+        # if self.CGT_BOL:
+        taxable_gains = self.total_investment_fv - self.total_investment
+        if self.ANNUAL_SALARY > 50271:
+            cgt = taxable_gains * 0.2
+        else:
+            taxable_income = self.ANNUAL_SALARY - self.PERSONAL_ALLOWANCE
+            if taxable_gains - self.CGT_ALLOWANCE + taxable_income <= 50270:
+                cgt = (taxable_gains - self.CGT_ALLOWANCE) * 0.1
+            else:
+                cgt += (50271 - taxable_income) * 0.1
+                cgt += (taxable_gains - self.CGT_ALLOWANCE - 50271) * 0.2
+        return cgt
 
     def run_calculations(self, adjust_for_inflation_bool = False):
         self.future_house_price = self.HOUSE_PRICE * (1+self.property_price_growth_annual)**self.years_until_sell
-        self.CGT = self.get_capital_gains_tax()
+        self.CGT = self.get_capital_gains_tax_property()
         self.SELLING_COST = self.future_house_price * self.SELLING_COST_MULT + self.CGT
         if adjust_for_inflation_bool:
             self.adjust_for_inflation = self.inflation
@@ -73,7 +88,6 @@ class Buy_or_Rent_Model():
             self.STAMP_DUTY = 0
         self.discount_rate = self.investment_return_annual
         self.DEPOSIT = self.HOUSE_PRICE * self.DEPOSIT_MULT
-        
         self.mortgage_calculations()
         self.get_house_buying_npv()
         self.get_house_buying_fv()
@@ -104,10 +118,13 @@ class Buy_or_Rent_Model():
         # self.buying_fv_inflation_adjusted = pv_future_payment(self.buying_fv, self.inflation, self.years_until_sell)
 
     def get_renting_fv(self): # assumes that buying costs and stamp duty are invested, rent is rolled up and deducted
-        fv_buying_cost = fv_present_payment(self.BUYING_COST_FLAT, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
-        fv_STAMP_DUTY = fv_present_payment(self.STAMP_DUTY, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
-        deposit_fv = fv_present_payment(self.DEPOSIT, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
-        self.renting_fv = deposit_fv + fv_buying_cost + fv_STAMP_DUTY #- self.rent_fv
+        self.total_investment = self.BUYING_COST_FLAT + self.STAMP_DUTY + self.DEPOSIT
+        self.total_investment_fv = fv_present_payment(self.total_investment, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
+        # fv_buying_cost = fv_present_payment(self.BUYING_COST_FLAT, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
+        # fv_STAMP_DUTY = fv_present_payment(self.STAMP_DUTY, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
+        # deposit_fv = fv_present_payment(self.DEPOSIT, self.discount_rate, self.years_until_sell, adjust_for_inflation = self.adjust_for_inflation)
+        self.cgt_investment = self.get_capital_gains_tax_investment()
+        self.renting_fv = self.total_investment_fv - self.cgt_investment
         # self.renting_fv_inflation_adjusted = pv_future_payment(self.renting_fv, self.inflation, self.years_until_sell)
 
 def plot_kde_from_list(arrays, st, figsize=(7, 2), main_colors = ['green'], legends = None, title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase'):
@@ -216,6 +233,7 @@ def generate_combinations_and_calculate_npv(
         left_column.markdown(f"***Breakdown:***")
         left_column.markdown(f" - Capital Invested (deposit plus buying cost): £{model.DEPOSIT:,.0f}")
         left_column.markdown(f" - Capital Invested (buying cost + stamp duty): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")    
+        left_column.markdown(f" - Capital Gains Tax: :red[-£{model.cgt_investment:,.0f}]")
         if model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY) >= 0:
             left_column.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         else:
