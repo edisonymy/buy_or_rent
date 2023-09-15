@@ -6,3 +6,4 @@ scipy
 seaborn
 matplotlib
 beautifulsoup4
+bs4
