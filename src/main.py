@@ -224,29 +224,31 @@ def generate_combinations_and_calculate_npv(
         st.markdown(f'<p style="background-color:#F0F2F6;font-size:32px;border-radius:0%; font-style: italic;">{text}</p>', unsafe_allow_html=True)
         # st.markdown(f'**<span style="font-size: 32px; font-style: italic;">{text}</span>**', unsafe_allow_html=True)
         left_column, right_column = st.columns(2)
-        right_column.write(f"### Buy - Asset future value after {model.years_until_sell} years")
-        right_column.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**", help="All components are converted to future value at the time of sale.")
-        right_column.markdown(f"***Breakdown:***")
-        right_column.markdown(f" - Capital Invested (deposit): £{model.DEPOSIT:,.0f}")
-        right_column.markdown(f" - Capital Invested (buying cost + stamp duty, if any): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")        
-        right_column.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]", help="Calculated using the property price growth rate set in the left sidebar.")
-        right_column.markdown(f" - Selling cost (including Capital Gains Tax): :red[ -£{model.SELLING_COST:,.0f}]",help= "Total expenses incurred when selling a property. These costs typically include real estate agent commissions, legal fees, advertising expenses, and any necessary repairs or renovations to prepare the property for sale.")
-        right_column.markdown(f" - Total maintenance and service costs: :red[ -£{model.fv_ongoing_cost:,.0f}]",help="Future value at the time of sale for the total cost associated with maintaining and servicing a property, including expenses such as property management fees, maintenance fees, and other related charges. Future value is determined by the discount rate, which is assumed to be equal to the investment return.")
-        right_column.markdown(f" - Total Mortgage Payments: :red[ -£{model.fv_mortgage_payments:,.0f}]", help="This is higher than the sum of all mortgage payments since the payments are converted to their future value at the time of sale. Future value is determined by the discount rate, which is assumed to be equal to the investment return.")
-        right_column.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]", help="This is higher than the sum of all rent payments that would have been paid since the payments are converted to their future value at the time of sale. Future value is determined by the discount rate, which is assumed to be equal to the investment return.")
+        with right_column:
+            st.write(f"### Buy - Asset future value after {model.years_until_sell} years")
+            st.markdown(f"**Typical Total Asset Value: £{model.buying_fv:,.0f}**", help="All components are converted to future value at the time of sale.")
+            # right_column.markdown(f"***Breakdown:***")
+            with st.expander("***Breakdown***:", expanded=False):
+                st.markdown(f" - Capital Invested (deposit): £{model.DEPOSIT:,.0f}")
+                st.markdown(f" - Capital Invested (buying cost + stamp duty, if any): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")        
+                st.markdown(f" - Property Price at Sale: :green[£{model.future_house_price:,.0f}]", help="Calculated using the property price growth rate set in the left sidebar.")
+                st.markdown(f" - Selling cost (including Capital Gains Tax): :red[ -£{model.SELLING_COST:,.0f}]",help= "Total expenses incurred when selling a property. These costs typically include real estate agent commissions, legal fees, advertising expenses, and any necessary repairs or renovations to prepare the property for sale.")
+                st.markdown(f" - Total maintenance and service costs: :red[ -£{model.fv_ongoing_cost:,.0f}]",help="Future value at the time of sale for the total cost associated with maintaining and servicing a property, including expenses such as property management fees, maintenance fees, and other related charges. Future value is determined by the discount rate, which is assumed to be equal to the investment return.")
+                st.markdown(f" - Total Mortgage Payments: :red[ -£{model.fv_mortgage_payments:,.0f}]", help="This is higher than the sum of all mortgage payments since the payments are converted to their future value at the time of sale. Future value is determined by the discount rate, which is assumed to be equal to the investment return.")
+                st.markdown(f" - Total Rent Saved (future value at time of sale): :green[£{model.rent_fv:,.0f}]", help="This is higher than the sum of all rent payments that would have been paid since the payments are converted to their future value at the time of sale. Future value is determined by the discount rate, which is assumed to be equal to the investment return.")
         
-
-        left_column.write(f"### Rent and invest - Asset future value after {model.years_until_sell} years")
-        # plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
-        left_column.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**", help="All components are converted to future value at the time of sale.")
-        left_column.markdown(f"***Breakdown:***")
-        left_column.markdown(f" - Capital Invested (deposit): £{model.DEPOSIT:,.0f}")
-        left_column.markdown(f" - Capital Invested (buying cost + stamp duty, if any): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")    
-        left_column.markdown(f" - Capital Gains Tax: :red[-£{model.cgt_investment:,.0f}]", help='Your tax rate is determined by the annual salary set in the left sidebar.')
-        if model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY) >= 0:
-            left_column.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]", help="Calculated with the investment return rated provided in the left sidebar.")
-        else:
-            left_column.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
+        with left_column:
+            st.write(f"### Rent and invest - Asset future value after {model.years_until_sell} years")
+            # plot_kde_from_list(renting_fv_list, left_column, figsize=(5, 2), title = 'Asset Value Probability Distribution', xlabel = 'Asset Value')
+            st.markdown(f"**Typical Total Asset Value: £{model.renting_fv:,.0f}**", help="All components are converted to future value at the time of sale.")
+            with st.expander("***Breakdown***:", expanded=False):
+                st.markdown(f" - Capital Invested (deposit): £{model.DEPOSIT:,.0f}")
+                st.markdown(f" - Capital Invested (buying cost + stamp duty, if any): £{model.BUYING_COST_FLAT + model.STAMP_DUTY:,.0f}")    
+                st.markdown(f" - Capital Gains Tax: :red[-£{model.cgt_investment:,.0f}]", help='Your tax rate is determined by the annual salary set in the left sidebar.')
+                if model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY) >= 0:
+                    st.markdown(f" - Assumed Typical Capital Growth: :green[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]", help="Calculated with the investment return rated provided in the left sidebar.")
+                else:
+                    st.markdown(f" - Assumed Typical Capital Growth: :red[£{model.renting_fv - (model.DEPOSIT + model.BUYING_COST_FLAT + model.STAMP_DUTY):,.0f}]")
         st.write('---')
         plot_kde_from_list([buying_fv_list,renting_fv_list], st, figsize=(7, 2), legends = ['Buying', 'Renting'],main_colors = ['orange', 'blue'], title = 'Future Asset Value Probability Distribution', xlabel = 'Asset Value')
         plot_kde_from_list([buying_npv_list], st, legends = ['Buying is better', 'Renting is better'],main_colors = ['blue'], secondary_color = 'orange', title = 'Net Present Value Probability Distribution', xlabel = 'Net Present Value For Property Purchase')

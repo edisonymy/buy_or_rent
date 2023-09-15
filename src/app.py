@@ -10,28 +10,8 @@ from utils.general import get_param_distribution
 st.title('Open Source UK Buy or Rent Simulation Model')
 st.write("---")
 st.write("Not sure whether it is financially better to buy a property or rent and invest? We use simulations to show possible returns for buying a property or renting given your assumptions. All parameters are assumed to be uncorrelated.")
-st.write("If you found this useful and want to support me, consider buying me a coffee here:")
-custom_css = """
-<style>
-    /* Adjust the button size */
-    .bmc-button {
-        width: 10px; /* Adjust the width as needed */
-        height: 20px; /* Adjust the height as needed */
-    }
-</style>
-"""
 
-# Embed the "Buy Me a Coffee" button script with custom CSS
-buy_me_a_coffee_html = """
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
-    data-name="bmc-button" data-slug="edisonymyt" data-color="#FFDD00" data-emoji="☕" data-font="Cookie"
-    data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000"
-    data-coffee-color="#ffffff" ></script>
-"""
-
-# Display the custom CSS and the button in the Streamlit app
-st.components.v1.html(custom_css + buy_me_a_coffee_html)
-# st.markdown("***Disclaimer: The app is currently in Beta. This model assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. The source code can be found at: https://github.com/edisonymy/buy_or_rent***")
+st.markdown("***This app is currently in Beta. It assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. The source code can be found at: https://github.com/edisonymy/buy_or_rent***")
 st.write("---")
 
 n_samples = 10000
@@ -137,6 +117,19 @@ percentiles_df, results_df = generate_combinations_and_calculate_npv(
 # st.subheader('Correlations Between Parameters and Buying NPV')
 with st.expander('Correlations Between Parameters and Buying NPV', expanded=False):
     st.write(results_df.corr().iloc[0,1:])
+
+st.write('---')
+st.write("If you found this useful and want to support me, consider buying me a coffee here:")
+# Embed the "Buy Me a Coffee" button script with custom CSS
+buy_me_a_coffee_html = """
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+    data-name="bmc-button" data-slug="edisonymyt" data-color="#FFDD00" data-emoji="☕" data-font="Cookie"
+    data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000"
+    data-coffee-color="#ffffff" ></script>
+"""
+
+# Display the custom CSS and the button in the Streamlit app
+st.components.v1.html(buy_me_a_coffee_html)
 # plot_button = st.button("Plot Additional Graphs")
 
 # Check if the button is clicked
