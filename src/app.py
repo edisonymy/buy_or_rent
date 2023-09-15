@@ -4,10 +4,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from main import Buy_or_Rent_Model, generate_combinations_and_calculate_npv, graph_kde_plots
 from utils.general import get_param_distribution
-from utils.ga import add_analytics_tag
+# from utils.ga import add_analytics_tag
 
-# Google Analytics for usage tracking, no personal data is collected
-add_analytics_tag()
+# # Google Analytics for usage tracking, no personal data is collected
+# add_analytics_tag()
 
 # Streamlit app title
 st.title('Open Source UK Buy or Rent Simulation Model')
