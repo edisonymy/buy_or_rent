@@ -5,5 +5,4 @@ numpy_financial
 scipy
 seaborn
 matplotlib
-beautifulsoup4
-bs4
+BeautifulSoup4
