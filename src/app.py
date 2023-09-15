@@ -14,7 +14,7 @@ st.write("Not sure whether it is financially better to buy a property or rent an
 st.markdown("***This app is currently in Beta. It assumes that you are in England, UK. Different countries may have different tax rules. No data is collected by this app. The source code can be found at: https://github.com/edisonymy/buy_or_rent***")
 st.write("---")
 
-n_samples = 10000
+n_samples = 500
 n_bins = 30
 
 np.random.seed(123)
