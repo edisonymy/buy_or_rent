@@ -8,7 +8,17 @@ from utils.general import get_param_distribution
 
 # # Google Analytics for usage tracking, no personal data is collected
 # add_analytics_tag()
-
+st.markdown(
+        """
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-QSN0R08N2M"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-QSN0R08N2M');
+            </script>
+        """, unsafe_allow_html=True)
 # Streamlit app title
 st.title('Open Source UK Buy or Rent Simulation Model')
 st.write("---")

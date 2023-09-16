@@ -4,7 +4,6 @@ import pathlib
 import logging
 import streamlit as st
 
-
 def add_analytics_tag():
     # replace G-QSN0R08N2M to your web app's ID
     
