@@ -8,24 +8,6 @@ from utils.general import get_param_distribution
 
 # # Google Analytics for usage tracking, no personal data is collected
 # add_analytics_tag()
-st.write("Scrollable content goes here.")
-
-# Add a sticky container using st.markdown() with embedded CSS
-st.markdown(
-    """
-    <div style="position: -webkit-sticky;
-                position: sticky;
-                top: 20px; /* Adjust the top value to control the sticky position */
-                background-color: #f1f1f1; /* Background color for the sticky container */
-                padding: 10px;
-                border: 1px solid #dcdcdc; /* Border for the sticky container */
-                border-radius: 5px;
-                z-index: 1;">
-    This is a sticky container. Scroll down to see it stick.
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 # Streamlit app title
 st.title('Open Source UK Buy or Rent Simulation Model')
 st.write("---")
